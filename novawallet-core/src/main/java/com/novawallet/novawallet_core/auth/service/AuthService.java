@@ -2,6 +2,8 @@ package com.novawallet.novawallet_core.auth.service;
 
 import com.novawallet.novawallet_core.auth.dto.RegisterRequest;
 import com.novawallet.novawallet_core.auth.dto.RegisterResponse;
+import com.novawallet.novawallet_core.common.exception.AppException;
+import com.novawallet.novawallet_core.common.exception.ErrorCode;
 import com.novawallet.novawallet_core.user.entity.User;
 import com.novawallet.novawallet_core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,8 @@ public class AuthService {
                 .trim()
                 .toLowerCase(Locale.ROOT);
         if(userRepository.existsByEmail(email)){
-            throw new IllegalStateException("Email already register!");}
+            throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
 
             String passwordHash = passwordEncoder.encode(request.password());
             User user = new User(email, passwordHash, request.fullName().trim());
